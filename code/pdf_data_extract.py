@@ -1,6 +1,6 @@
 '''
 This script can read in a pdf and convert it to a pandas dataframe.
-I am using this to exract calculation reaction rates
+I am using this to extract calculation reaction rates
 Author: Trevor
 Date: Jun 15 2023
 '''
