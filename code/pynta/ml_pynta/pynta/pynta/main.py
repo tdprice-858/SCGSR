@@ -467,6 +467,41 @@ class Pynta:
             fw = Firework([ts_task],parents=parents,name="TS"+str(i)+"est",spec={"_allow_fizzled_parents": True,"_priority": 10})
             self.fws.append(fw)
 
+    def run_HFSP_no_firworks(self,adsorbates_finished=False):
+        """
+        Sets up fireworks to generate and filter a set of TS estimates, optimize each unique TS estimate,
+        and run vibrational and IRC calculations on the each unique final transition state
+        Note the vibrational and IRC calculations are launched at the same time
+        """
+        if self.software != "XTB":
+            opt_obj_dict = {"software":self.software,"label":"prefix","socket":self.socket,"software_kwargs":self.software_kwargs_TS,
+                "run_kwargs": {"fmax" : self.fmaxopt, "steps" : 70},"constraints": ["freeze up to {}".format(self.freeze_ind)],"sella":True,"order":1,}
+        else:
+            opt_obj_dict = {"software":self.software,"label":"prefix","socket":self.socket,"software_kwargs":self.software_kwargs_TS,
+                "run_kwargs": {"fmax" : 0.02, "steps" : 70},"constraints": ["freeze up to "+str(self.nslab)],"sella":True,"order":1,}
+        vib_obj_dict = {"software":self.software,"label":"prefix","socket":self.socket,"software_kwargs":self.software_kwargs,
+                "constraints": ["freeze up to "+str(self.nslab)]}
+        IRC_obj_dict = {"software":self.software,"label":"prefix","socket":self.socket,"software_kwargs":self.software_kwargs,
+                "run_kwargs": {"fmax" : self.fmaxirc, "steps" : 70},"constraints":["freeze up to "+str(self.nslab)]}
+        for i,rxn in enumerate(self.rxns_dict):
+            ts_path = os.path.join(self.path,"TS"+str(i))
+            os.makedirs(ts_path)
+            ts_task = MolecularTSEstimate({"rxn": rxn,"ts_path": ts_path,"slab_path": self.slab_path,"adsorbates_path": os.path.join(self.path,"Adsorbates"),
+                "rxns_file": self.rxns_file,"path": self.path,"metal": self.metal,"facet": self.surface_type, "out_path": ts_path,
+                "spawn_jobs": True, "opt_obj_dict": opt_obj_dict, "vib_obj_dict": vib_obj_dict,
+                    "IRC_obj_dict": IRC_obj_dict, "nprocs": 48, "name_to_adjlist_dict": self.name_to_adjlist_dict,
+                    "gratom_to_molecule_atom_maps":{sm: {str(k):v for k,v in d.items()} for sm,d in self.gratom_to_molecule_atom_maps.items()},
+                    "gratom_to_molecule_surface_atom_maps":{sm: {str(k):v for k,v in d.items()} for sm,d in self.gratom_to_molecule_surface_atom_maps.items()},
+                    "nslab":self.nslab,"Eharmtol":self.Eharmtol,"Eharmfiltertol":self.Eharmfiltertol,"Ntsmin":self.Ntsmin,
+                    "max_num_hfsp_opts":self.max_num_hfsp_opts})
+            reactants = rxn["reactant_names"]
+            products = rxn["product_names"]
+            parents = []
+            ts_task.run_only_HFSP_task()
+
+            #fw = Firework([ts_task],parents=parents,name="TS"+str(i)+"est",spec={"_allow_fizzled_parents": True,"_priority": 10})
+            #self.fws.append(fw)
+
     def launch(self,single_job=False):
         """
         Call appropriate rapidfire function
@@ -513,6 +548,37 @@ class Pynta:
         if launch:
             self.launch()
 
+    def execute_no_fw_HFSP(self,generate_initial_ad_guesses=True,calculate_adsorbates=True,
+                calculate_transition_states=True,launch=True):
+        """
+        generate and launch a Pynta Fireworks Workflow
+        if generate_initial_ad_guesses is true generates initial guesses, otherwise assumes they are already there
+        if calculate_adsorbates is true generates firework jobs for adsorbates, otherwise assumes they are not needed
+        if calculate_transition_states is true generates fireworks jobs for transition states, otherwise assumes they are not needed
+        if launch is true launches the fireworks workflow in infinite mode...this generates a process that will continue to spawn jobs
+        if launch is false the Fireworks workflow is added to the launchpad, where it can be launched separately using fireworks commands
+        """
+
+        if not calculate_adsorbates: #default handling
+            generate_initial_ad_guesses = False
+
+        if self.slab_path is None: #handle slab
+            self.generate_slab()
+
+        self.analyze_slab()
+        self.generate_mol_dict()
+        self.generate_initial_adsorbate_guesses(skip_structs=(not generate_initial_ad_guesses))
+
+        #adsorbate optimization
+        if calculate_adsorbates:
+            self.setup_adsorbates(initial_guess_finished=(not generate_initial_ad_guesses))
+
+        if calculate_transition_states:
+            #setup transition states
+            self.run_HFSP_no_firworks(adsorbates_finished=(not calculate_adsorbates))
+
+
+
 
     def execute_from_initial_ad_guesses(self):
         if self.slab_path is None: #handle slab
@@ -526,7 +592,7 @@ class Pynta:
         self.setup_adsorbates(initial_guess_finished=True)
 
         #setup transition states
-        self.setup_transition_states()
+        self.run_HFSP_no_firworks()
 
         wf = Workflow(self.fws, name=self.label)
         self.launchpad.add_wf(wf)
