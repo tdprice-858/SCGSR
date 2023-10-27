@@ -1,0 +1,164 @@
+- index: 0
+  reactant: 'multiplicity 1
+
+    1 *1 O u0 p2 c0 {2,D}
+
+    2 *2 O u0 p2 c0 {1,D}
+
+    3 *3 X u0 p0 c0
+
+    4 *4 X u0 p0 c0
+
+    '
+  product: 'multiplicity 1
+
+    1 *1 O u0 p2 c0 {3,D}
+
+    2 *2 O u0 p2 c0 {4,D}
+
+    3 *3 X u0 p0 c0 {1,D}
+
+    4 *4 X u0 p0 c0 {2,D}
+
+    '
+  reaction: O2 + X + X <=> OX + OX
+  reaction_family: Dissociative adsorption
+- index: 1
+  reactant: 'multiplicity 1
+
+    1    H u0 p0 c0 {4,S}
+
+    2    H u0 p0 c0 {4,S}
+
+    3    H u0 p0 c0 {4,S}
+
+    4    C u0 p0 c0 {1,S} {2,S} {3,S} {5,S}
+
+    5 *1 O u0 p2 c0 {4,S} {6,S}
+
+    6 *2 H u0 p0 c0 {5,S}
+
+    7 *3 O u0 p2 c0 {8,D}
+
+    8 *4 X u0 p0 c0 {7,D}
+
+    9 *5 X u0 p0 c0
+
+    '
+  product: 'multiplicity 1
+
+    1    H u0 p0 c0 {4,S}
+
+    2    H u0 p0 c0 {4,S}
+
+    3    H u0 p0 c0 {4,S}
+
+    4    C u0 p0 c0 {1,S} {2,S} {3,S} {5,S}
+
+    5 *1 O u0 p2 c0 {4,S} {9,S}
+
+    6 *2 H u0 p0 c0 {7,S}
+
+    7 *3 O u0 p2 c0 {6,S} {8,S}
+
+    8 *4 X u0 p0 c0 {7,S}
+
+    9 *5 X u0 p0 c0 {5,S}
+
+    '
+  reaction: CH3OH + OX + X <=> CH3OX + HOX
+  reaction_family: Langmuir Hinshelwood
+- index: 2
+  reactant: 'multiplicity 1
+
+    1    H u0 p0 c0 {4,S}
+
+    2    H u0 p0 c0 {4,S}
+
+    3    H u0 p0 c0 {4,S}
+
+    4    C u0 p0 c0 {1,S} {2,S} {3,S} {5,S}
+
+    5 *1 O u0 p2 c0 {4,S} {6,S}
+
+    6 *2 H u0 p0 c0 {5,S}
+
+    7 *3 O u0 p2 c0 {8,S} {9,S}
+
+    8 *4 H u0 p0 c0 {7,S}
+
+    9 *5 X u0 p0 c0 {7,S}
+
+    10 *6 X u0 p0 c0
+
+    '
+  product: 'multiplicity 1
+
+    1    H u0 p0 c0 {4,S}
+
+    2    H u0 p0 c0 {4,S}
+
+    3    H u0 p0 c0 {4,S}
+
+    4    C u0 p0 c0 {1,S} {2,S} {3,S} {5,S}
+
+    5 *1 O u0 p2 c0 {4,S} {10,S}
+
+    6 *2 H u0 p0 c0 {7,S}
+
+    7 *3 O u0 p2 c0 {6,S} {8,S}
+
+    8 *4 H u0 p0 c0 {7,S}
+
+    9 *5 X u0 p0 c0
+
+    10 *6 X u0 p0 c0 {5,S}
+
+    '
+  reaction: CH3OH + HOX  <=> CH3OX + H2O
+  reaction_family: Langmuir Hinshelwood
+- index: 3
+  reactant: 'multiplicity 1
+
+    1    H u0 p0 c0 {4,S}
+
+    2    H u0 p0 c0 {4,S}
+
+    3 *1 H u0 p0 c0 {4,S}
+
+    4    C u0 p0 c0 {1,S} {2,S} {3,S} {5,S}
+
+    5    O u0 p2 c0 {4,S} {7,S}
+
+    6 *2 O u0 p2 c0 {8,D}
+
+    7    X u0 p0 c0 {5,S}
+
+    8    X u0 p0 c0 {6,D}
+
+    9    X u0 p0 c0
+
+    '
+  product: 'multiplicity 1
+
+    1    H u0 p0 c0 {4,S}
+
+    2    H u0 p0 c0 {4,S} {9,vdW}
+
+    3 *1 H u0 p0 c0 {6,S}
+
+    4    C u0 p0 c0 {1,S} {2,S} {5,D}
+
+    5    O u0 p2 c0 {4,D} {7,vdW}
+
+    6 *2 O u0 p2 c0 {8,S} {3,S}
+
+    7    X u0 p0 c0 {5,vdW}
+
+    8    X u0 p0 c0 {6,S}
+
+    9    X u0 p0 c0 {2,vdW}
+
+    '
+  reaction: CH3OX + OX  <=> CH2OX + HOX
+  reaction_family: Langmuir Hinshelwood

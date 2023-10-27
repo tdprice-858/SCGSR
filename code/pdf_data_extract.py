@@ -8,7 +8,7 @@ Date: Jun 15 2023
 from tabula import read_pdf
 import numpy as np
 from tabulate import tabulate
-path_to_pdf = '/Users/tdprice/Desktop/\
+path_to_pdf = '/Users/tdprice/Desktop/Desktop/\
 cctc201601053_sup_0001_misc_information.pdf'
 df = read_pdf(path_to_pdf, pages='all')
 extract = False
